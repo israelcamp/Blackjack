@@ -1,23 +1,4 @@
-function shuffle(array) {
 
-    var currentIndex = array.length;
-    var temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-
-};
 
 class Carta {
     // Classe para uma carta do blackjack
@@ -29,7 +10,7 @@ class Carta {
 
 class Baralho {
     // Contem as cartas do baralho
-    constructor(){
+    constructor() {
         this.naipes = ['Copas', 'Paus', 'Espadas', 'Ouros'];
         this.cartas = this.cria_baralho();
     }
@@ -38,9 +19,9 @@ class Baralho {
         let cartas = [];
         for (const naipe of this.naipes) {
             //colocando cartas 2 a 9
-            for (let i = 2; i < 10; i++)  cartas.push(new Carta(i, naipe));
+            for (let i = 2; i < 10; i++) cartas.push(new Carta(i, naipe));
             //colocando cartas 10 a Rei
-            for (let i = 0; i < 4; i++)  cartas.push(new Carta(10, naipe));
+            for (let i = 0; i < 4; i++) cartas.push(new Carta(10, naipe));
             //colocando o As
             cartas.push(new Carta([1, 11], naipe));
         }
@@ -55,12 +36,21 @@ class Baralho {
     }
 }
 
+
+class Memorizador {
+    constructor(filho, parente) {
+        this.filho = filho;
+        this.parente = parente;
+    }
+}
+
 class Blackjack {
     // Classe para comandar o jogo de blackjack
     constructor() {
         this.deck = new Baralho();
         this.n = this.deck.length;
-        this.opcoes = [];
+        this.global_tracker = [];
+        this.counter = 0;
     }
     embaralha() {
         this.deck.embaralha();
@@ -68,6 +58,7 @@ class Blackjack {
     get cartas() {
         return this.deck.cartas;
     }
+    // Compara as mãos do jogador e do dealer e retorna o ganho do jogador (1, 0, -1)
     compara_maos(pontos_jogador, pontos_dealer) {
         if (pontos_jogador > pontos_dealer) return 1;
         else if (pontos_jogador == pontos_dealer) return 0;
@@ -82,41 +73,80 @@ class Blackjack {
 
         return soma;
     }
-    resolve(i) {
-        let opcoes = [];
-        if (this.n - i < 4) return 0;
+    resolve(i, j) {
+        let historico = [],
+            tracker = [];
+
+        if (this.n - i < 4) {
+            // console.log('Sem cartas suficientes');
+            return 0;
+        }
         var pontos_jogador = 0;
         var pontos_dealer = 0;
-        for (let p = 2; p < this.n - i - 2; p++) {
+        var mao_jogador, mao_dealer;
+        for (let p = 2; p <= this.n - i - 2; p++) {
+            // salvando a mao do jogador
+            mao_jogador = [this.cartas[i], this.cartas[i + 2]].concat(this.cartas.slice(i + 4, i + p + 2));
             // contando a pontuação do jogador
-            pontos_jogador = this.pontos_na_mao(this.cartas.slice(i + 4, i + p + 2).concat([this.cartas[i], this.cartas[i + 2]]));
+            pontos_jogador = this.pontos_na_mao(mao_jogador);
             if (pontos_jogador > 21) {
-                opcoes.push(-1 + this.resolve(i + p + 2));
-                 break;
+                historico.push(-1 + this.resolve(i + p + 2, i));
+                mao_dealer = [this.cartas[i + 1], this.cartas[i + 3]];
+                // console.log(`Jogador = ${pontos_jogador} Dealer = ${this.pontos_na_mao(mao_dealer)} - 21`);
+                tracker.push({
+                    i: i,
+                    j: j,
+                    resultado: Math.max(...historico),
+                    mao_dealer: mao_dealer,
+                    mao_jogador: mao_jogador,
+                    atual: -1,
+                })
+                break;
             }
-            // console.log(pontos_jogador);
-            for (var d = 2; d < this.n - i - p; d++) {
-                pontos_dealer = this.pontos_na_mao(this.cartas.slice(i+p+2, i+p+d).concat([this.cartas[i+1], this.cartas[i+3]]));
+
+            for (var d = 2; d <= this.n - i - p; d++) {
+                mao_dealer = [this.cartas[i + 1], this.cartas[i + 3]].concat(this.cartas.slice(i + p + 2, i + p + d));
+                pontos_dealer = this.pontos_na_mao(mao_dealer);
                 if (pontos_dealer > 17) break;
             }
             pontos_dealer = (pontos_dealer > 21) ? 0 : pontos_dealer;
-            // console.log(pontos_dealer);
-            opcoes.push(this.compara_maos(pontos_jogador, pontos_dealer) + this.resolve(i+p+d));
+
+            historico.push(this.compara_maos(pontos_jogador, pontos_dealer) + this.resolve(i + p + d, i));
+            tracker.push({
+                i: i,
+                j: j,
+                resultado: Math.max(...historico),
+                mao_dealer: mao_dealer,
+                mao_jogador: mao_jogador,
+                atual: this.compara_maos(pontos_jogador, pontos_dealer),
+            })
+
+            // console.log(`Jogador = ${pontos_jogador} Dealer = ${this.pontos_na_mao(mao_dealer)}`);
         }
-        return Math.max(...opcoes);
+        this.counter++;
+        // console.log(index_of_max_value_in_array(historico));
+        this.global_tracker.push(tracker[index_of_max_value_in_array(historico)]);
+        return Math.max(...historico);
+    }
+    reconstroi(i) {
+        let optimo = this.global_tracker.filter(v => v.i === i); // encontrando o nó de partida
+        if (optimo.length != 1) throw "Erro, dois nós iniciais encontrados";
+
+        while (this.n - i >= 4) {
+            let q = optimo.slice(-1)[0];
+            let j = q.mao_dealer.length + q.mao_jogador.length;
+            let proximo = this.global_tracker.filter(v => (v.i === j + i && v.j === i))[0];
+            optimo.push(proximo);
+            i = i + j;
+            // console.log(proximo);
+        }
+        console.log(optimo);
     }
 }
 
 jogo = new Blackjack();
 jogo.embaralha();
-console.log(jogo.resolve(0));
-// console.log(jogo.cartas.slice(0, 5)); 
-
-
-
-
-
-
-function BJ(i) {
-    return console.log(i);
-}
+let i = 0;
+console.log(jogo.resolve(i, i));
+console.log(jogo);
+jogo.reconstroi(i);

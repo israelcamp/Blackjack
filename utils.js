@@ -1,9 +1,3 @@
-/**
- * Randomly shuffle an array
- * https://stackoverflow.com/a/2450976/1293256
- * @param  {Array} array The array to shuffle
- * @return {String}      The first item in the shuffled array
- */
 function shuffle(array) {
 
     var currentIndex = array.length;
@@ -24,3 +18,7 @@ function shuffle(array) {
     return array;
 
 };
+
+function index_of_max_value_in_array(a) {
+    return a.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+}
