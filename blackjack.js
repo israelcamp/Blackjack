@@ -1,49 +1,3 @@
-
-
-class Carta {
-    // Classe para uma carta do blackjack
-    constructor(valor, naipe) {
-        this.valor = valor;
-        this.naipe = naipe;
-    }
-}
-
-class Baralho {
-    // Contem as cartas do baralho
-    constructor() {
-        this.naipes = ['Copas', 'Paus', 'Espadas', 'Ouros'];
-        this.cartas = this.cria_baralho();
-    }
-    // cria um baralho de cartas
-    cria_baralho() {
-        let cartas = [];
-        for (const naipe of this.naipes) {
-            //colocando cartas 2 a 9
-            for (let i = 2; i < 10; i++) cartas.push(new Carta(i, naipe));
-            //colocando cartas 10 a Rei
-            for (let i = 0; i < 4; i++) cartas.push(new Carta(10, naipe));
-            //colocando o As
-            cartas.push(new Carta([1, 11], naipe));
-        }
-        return cartas;
-    }
-    // embaralha as cartas do baralho
-    embaralha() {
-        shuffle(this.cartas);
-    }
-    get length() {
-        return this.cartas.length;
-    }
-}
-
-
-class Memorizador {
-    constructor(filho, parente) {
-        this.filho = filho;
-        this.parente = parente;
-    }
-}
-
 class Blackjack {
     // Classe para comandar o jogo de blackjack
     constructor() {
@@ -128,7 +82,7 @@ class Blackjack {
         this.global_tracker.push(tracker[index_of_max_value_in_array(historico)]);
         return Math.max(...historico);
     }
-    reconstroi(i) {
+    reconstroi(i) { // reconstroi as jogadas ótimas a partir da carta i
         let optimo = this.global_tracker.filter(v => v.i === i); // encontrando o nó de partida
         if (optimo.length != 1) throw "Erro, dois nós iniciais encontrados";
 
@@ -138,15 +92,50 @@ class Blackjack {
             let proximo = this.global_tracker.filter(v => (v.i === j + i && v.j === i))[0];
             optimo.push(proximo);
             i = i + j;
-            // console.log(proximo);
         }
-        console.log(optimo);
+        return optimo
+    }
+    desenha_jogo(otimos, contador, x, y, w, h, r) { // desenha a mao do jogador
+        let atual = otimos[contador.rodada];
+        let xoffset = w + w * 0.4;
+        let xjogador = x;
+        
+        for (let i = 0; i < atual.mao_jogador.length; i++) { // desenha as cartas do jogador
+            let carta = atual.mao_jogador[i];
+            carta.desenho(xjogador, y, w, h, r);
+            if (i == contador.jogador) {
+                contador.jogador += 1;
+                break;
+            }
+            xjogador += xoffset;
+        }
+
+        xoffset = w + w * 0.4;
+        let xdealer = x;
+        for (let i = 0; i < atual.mao_dealer.length; i++) { // desenha as cartas do dealer
+            let carta = atual.mao_dealer[i];
+            carta.desenho(xdealer, y - h * 1.55, w, h, r);
+            if (i == contador.dealer) {
+                contador.dealer += 1;
+                break;
+            }
+            xdealer += xoffset;
+        }
+
+        if (contador.jogador >= atual.mao_jogador.length && contador.dealer >= atual.mao_dealer.length) {
+            contador.jogador = 0;
+            contador.dealer  = 0;
+            if (contador.rodada < otimos.length - 1) contador.rodada += 1;
+        }
+
+        return contador;
     }
 }
 
-jogo = new Blackjack();
-jogo.embaralha();
-let i = 0;
-console.log(jogo.resolve(i, i));
-console.log(jogo);
-jogo.reconstroi(i);
+// jogo = new Blackjack();
+// jogo.embaralha();
+// let i = 0;
+// console.log(jogo.resolve(i, i));
+// console.log(jogo);
+// let otimo = jogo.reconstroi(i);
+// console.log(otimo)
