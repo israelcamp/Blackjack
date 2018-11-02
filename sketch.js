@@ -28,9 +28,10 @@ function setup() {
     ganhos_dealer: 0,
   };
   angleMode(DEGREES);
+  frameRate(1);
   background(0, 153, 51);
+  desenha_nomes();
   // contador = jogo.desenha_jogo(optimo, contador, ...params);
-  frameRate(0.5);
   // noLoop();
 
 }
