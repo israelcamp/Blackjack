@@ -140,19 +140,20 @@ class Blackjack {
         contador.ganhos_dealer += lucro * (-1);
         return contador;
     }
-    mostra_estado(contador, x, y) {
+    mostra_lucro(contador, x, y) {
         display_text(`LUCRO`, x + 250, y - 120, [255, 204, 0], 0);
         display_text(contador.ganhos_jogador, x + 270, y - 60, [0, 0, 0], 255);
         display_text(' x ', x + 320, y - 60, [255, 204, 0], 0);
         display_text(contador.ganhos_dealer, x + 380, y - 60, [255, 255, 255], 0);
-
+    }
+    mostra_pontuacao(contador, x, y) {
         display_text(`PONTUAÇÃO`, x + 600, y - 120, [255, 204, 0], 0);
         display_text(contador.pontos_jogador, x + 670, y - 60, [0, 0, 0], 255);
         display_text(' x ', x + 730, y - 60, [255, 204, 0], 0);
         display_text(contador.pontos_dealer, x + 800, y - 60, [255, 255, 255], 0);
     }
     desenha_vitoria(contador, x, y) {
-        let emoji_jogador , emoji_dealer;
+        let emoji_jogador, emoji_dealer;
         if (contador.ganhos_dealer > contador.ganhos_jogador) {
             emoji_jogador = '\u{1F61E}';
             emoji_dealer = '\u{1F602}';
@@ -165,7 +166,7 @@ class Blackjack {
         strokeWeight(4);
         fill(255);
         stroke(0);
-        text(emoji_dealer, x + 500, y - h *0.9);
+        text(emoji_dealer, x + 500, y - h * 0.9);
         pop();
 
         push();
@@ -187,7 +188,8 @@ class Blackjack {
         } else {
             this.desenha_vitoria(contador, x, y, h);
         }
-        this.mostra_estado(contador, x, y);
+        this.mostra_lucro(contador, x, y);
+        this.mostra_pontuacao(contador, x, y);
         return contador;
     }
 }

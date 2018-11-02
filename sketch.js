@@ -26,11 +26,15 @@ function setup() {
     dealer: 0,
     ganhos_jogador: 0,
     ganhos_dealer: 0,
+    pontos_jogador: 0,
+    pontos_dealer: 0,
   };
   angleMode(DEGREES);
   frameRate(1);
   background(0, 153, 51);
   desenha_nomes();
+  jogo.mostra_lucro(contador, params[0], params[1]);
+  jogo.mostra_pontuacao(contador, params[0], params[1]);
   // contador = jogo.desenha_jogo(optimo, contador, ...params);
   // noLoop();
 
