@@ -27,7 +27,18 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function display_text(msg, x, y, cor, stroke_cor) {
+    push();
 
+    translate(x, y);
+    strokeWeight(4);
+    stroke(stroke_cor);
+    textSize(60);
+    fill(...cor);
+    text(msg, 0, 0);
+
+    pop();
+}
 
 // desenha_mao(estado, contador, x, y, w, h, r) {
 //     // desenhando as cartas do jogador

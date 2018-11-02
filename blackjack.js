@@ -18,6 +18,13 @@ class Blackjack {
         else if (pontos_jogador == pontos_dealer) return 0;
         else return -1;
     }
+    compara_maos_2(pontos_jogador, pontos_dealer) {
+        if (pontos_jogador > 21) return -1;
+        if (pontos_dealer > 21) return 1;
+        if (pontos_jogador > pontos_dealer) return 1;
+        else if (pontos_jogador == pontos_dealer) return 0;
+        else return -1;
+    }
     pontos_na_mao(cartas_array) {
         let as = cartas_array.filter(carta => Array.isArray(carta.valor)); // pega o as 
         let normais = cartas_array.filter(carta => !Array.isArray(carta.valor)); // pega as outras cartas
@@ -99,36 +106,55 @@ class Blackjack {
         let atual = otimos[contador.rodada];
         let xoffset = w + w * 0.4;
         let xjogador = x;
-        
-        for (let i = 0; i < atual.mao_jogador.length; i++) { // desenha as cartas do jogador
-            let carta = atual.mao_jogador[i];
-            carta.desenho(xjogador, y, w, h, r);
-            if (i == contador.jogador) {
-                contador.jogador += 1;
-                break;
+        if (atual) {
+            for (let i = 0; i < atual.mao_jogador.length; i++) { // desenha as cartas do jogador
+                let carta = atual.mao_jogador[i];
+                carta.desenho(xjogador, y, w, h, r);
+                if (i == contador.jogador) {
+                    contador.jogador += 1;
+                    contador.pontos_jogador = this.pontos_na_mao(atual.mao_jogador.slice(0, contador.jogador));
+                    break;
+                }
+                xjogador += xoffset;
             }
-            xjogador += xoffset;
-        }
 
-        xoffset = w + w * 0.4;
-        let xdealer = x;
-        for (let i = 0; i < atual.mao_dealer.length; i++) { // desenha as cartas do dealer
-            let carta = atual.mao_dealer[i];
-            carta.desenho(xdealer, y - h * 1.55, w, h, r);
-            if (i == contador.dealer) {
-                contador.dealer += 1;
-                break;
+
+            xoffset = w + w * 0.4;
+            let xdealer = x;
+            for (let i = 0; i < atual.mao_dealer.length; i++) { // desenha as cartas do dealer
+                let carta = atual.mao_dealer[i];
+                carta.desenho(xdealer, y - h * 1.55, w, h, r);
+                if (i == contador.dealer) {
+                    contador.dealer += 1;
+                    contador.pontos_dealer = this.pontos_na_mao(atual.mao_dealer.slice(0, contador.dealer));
+                    break;
+                }
+                xdealer += xoffset;
             }
-            xdealer += xoffset;
-        }
 
-        if (contador.jogador >= atual.mao_jogador.length && contador.dealer >= atual.mao_dealer.length) {
-            contador.jogador = 0;
-            contador.dealer  = 0;
-            if (contador.rodada < otimos.length - 1) contador.rodada += 1;
-        }
+            this.mostra_estado(contador, x, y);
 
+            if (contador.jogador >= atual.mao_jogador.length && contador.dealer >= atual.mao_dealer.length) {
+                contador.jogador = 0;
+                contador.dealer = 0;
+                if (contador.rodada < otimos.length - 1) contador.rodada += 1;
+                let lucro = this.compara_maos_2(this.pontos_na_mao(atual.mao_jogador), this.pontos_na_mao(atual.mao_dealer));
+                contador.ganhos_jogador += lucro
+                contador.ganhos_dealer += lucro * (-1);
+            }
+        }
         return contador;
+    }
+    mostra_estado(contador, x, y) {
+        display_text(`LUCRO`, x + 250, y - 120, [255, 204, 0], 0);
+        display_text(contador.ganhos_jogador, x + 270, y - 60, [0, 0, 0], 255);
+        display_text(' x ', x + 320, y - 60, [255, 204, 0], 0);
+        display_text(contador.ganhos_dealer, x + 380, y - 60, [255, 255, 255], 0);
+
+        display_text(`PONTUAÇÃO`, x + 600, y - 120, [255, 204, 0], 0);
+        display_text(contador.pontos_jogador, x + 670, y - 60, [0, 0, 0], 255);
+        display_text(' x ', x + 730, y - 60, [255, 204, 0], 0);
+        display_text(contador.pontos_dealer, x + 800, y - 60, [255, 255, 255], 0);
     }
 }
 
