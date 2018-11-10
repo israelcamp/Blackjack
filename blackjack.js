@@ -30,7 +30,9 @@ class Blackjack {
         let normais = cartas_array.filter(carta => !Array.isArray(carta.valor)); // pega as outras cartas
         let soma = normais.reduce((a, b) => a + b.valor, 0); // soma as cartas
 
-        if (as.length) soma += (soma + 11) > 21 ? 1 : 11; // se existe algum as na mão soma 1 se a soma passa de 21, 11 c.c.
+        if (as.length) {
+            for (let i = 0; i < as.length; i++) soma += (soma + 11) > 21 ? 1 : 11;
+        } // se existe algum as na mão soma 1 se a soma passa de 21, 11 c.c.
 
         return soma;
     }
@@ -68,7 +70,7 @@ class Blackjack {
             for (var d = 2; d <= this.n - i - p; d++) {
                 mao_dealer = [this.cartas[i + 1], this.cartas[i + 3]].concat(this.cartas.slice(i + p + 2, i + p + d));
                 pontos_dealer = this.pontos_na_mao(mao_dealer);
-                if (pontos_dealer > 17) break;
+                if (pontos_dealer >= 17) break;
             }
             pontos_dealer = (pontos_dealer > 21) ? 0 : pontos_dealer;
 
@@ -102,42 +104,64 @@ class Blackjack {
         }
         return optimo
     }
-    desenha_maos(atual, contador, x, y, w, h, r) {
-        let xoffset = w + w * 0.4;
+    desenha_maos(contador, x, y, w, h, r) {
+        let atual = contador.atual;
+        let xoffset = w - 50;
         let xjogador = x;
         for (let i = 0; i < atual.mao_jogador.length; i++) { // desenha as cartas do jogador
             let carta = atual.mao_jogador[i];
             carta.desenho(xjogador, y, w, h, r);
-            if (i == contador.jogador) {
-                contador.jogador += 1;
-                contador.pontos_jogador = this.pontos_na_mao(atual.mao_jogador.slice(0, contador.jogador));
+            if (i == contador.jogador)
                 break;
-            }
             xjogador += xoffset;
         }
 
-
-        xoffset = w + w * 0.4;
+        xoffset = w - 50;
         let xdealer = x;
         for (let i = 0; i < atual.mao_dealer.length; i++) { // desenha as cartas do dealer
             let carta = atual.mao_dealer[i];
             carta.desenho(xdealer, y - h * 1.55, w, h, r);
-            if (i == contador.dealer) {
-                contador.dealer += 1;
-                contador.pontos_dealer = this.pontos_na_mao(atual.mao_dealer.slice(0, contador.dealer));
+            if (i == contador.dealer) 
                 break;
-            }
             xdealer += xoffset;
         }
-        return contador;
     }
-    atualiza_contador(otimos, atual, contador) {
-        contador.jogador = 0;
-        contador.dealer = 0;
-        if (contador.rodada < otimos.length - 1) contador.rodada += 1;
-        let lucro = this.compara_maos_2(this.pontos_na_mao(atual.mao_jogador), this.pontos_na_mao(atual.mao_dealer));
-        contador.ganhos_jogador += lucro
-        contador.ganhos_dealer += lucro * (-1);
+    determina_rodada_vencedor(mao_jogador, mao_dealer) { // determina vencedor da rodada e devolve o lucro do jogador
+        let lucro = this.compara_maos_2(this.pontos_na_mao(mao_jogador), this.pontos_na_mao(mao_dealer));
+        var vencedor;
+        if (lucro == -1) vencedor = 'VITÓRIA\nDEALER';
+        else if (lucro == 0) vencedor = 'EMPATE';
+        else if (lucro == 1) vencedor = 'VITÓRIA\nJOGADOR';
+        return {
+            lucro: lucro,
+            vencedor: vencedor,
+        }
+    }
+    atualiza_contador(otimos, contador) {
+        let mao_jogador = contador.atual.mao_jogador;
+        let mao_dealer = contador.atual.mao_dealer;
+        if (contador.jogador < mao_jogador.length - 1) { // dando as cartas do jogador
+            contador.jogador++;
+            if (contador.jogador + 1 == mao_jogador.length) contador.acao = 'STAND';
+            else contador.acao = 'HIT';
+        } else { // dando as cartas do dealer
+            contador.acao = '';
+            if (contador.dealer < mao_dealer.length - 1) contador.dealer++;
+            else {
+                let fim_rodada = this.determina_rodada_vencedor(mao_jogador, mao_dealer);
+                contador.acao = fim_rodada.vencedor;
+                contador.ganhos_jogador += fim_rodada.lucro;
+                contador.ganhos_dealer += -fim_rodada.lucro;
+                contador.jogador = 0;
+                contador.dealer = 0;
+                contador.rodada += 1;
+                if (contador.rodada < otimos.length) {
+                    contador.atual = otimos[contador.rodada];
+                } else {
+                    contador.fim = true;
+                }
+            }
+        }
         return contador;
     }
     mostra_lucro(contador, x, y) {
@@ -147,10 +171,14 @@ class Blackjack {
         display_text(contador.ganhos_dealer, x + 380, y - 60, [255, 255, 255], 0);
     }
     mostra_pontuacao(contador, x, y) {
+        let mao_jogador = contador.atual.mao_jogador.slice(0, contador.jogador + 1);
+        let mao_dealer = contador.atual.mao_dealer.slice(0, contador.dealer + 1);
+        let pontos_jogador = this.pontos_na_mao(mao_jogador);
+        let pontos_dealer = this.pontos_na_mao(mao_dealer);
         display_text(`PONTUAÇÃO`, x + 600, y - 120, [255, 204, 0], 0);
-        display_text(contador.pontos_jogador, x + 670, y - 60, [0, 0, 0], 255);
+        display_text(pontos_jogador, x + 670, y - 60, [0, 0, 0], 255);
         display_text(' x ', x + 730, y - 60, [255, 204, 0], 0);
-        display_text(contador.pontos_dealer, x + 800, y - 60, [255, 255, 255], 0);
+        display_text(pontos_dealer, x + 800, y - 60, [255, 255, 255], 0);
     }
     desenha_vitoria(contador, x, y) {
         let emoji_jogador, emoji_dealer;
@@ -178,26 +206,4 @@ class Blackjack {
         pop();
 
     }
-    desenha_jogo(otimos, contador, x, y, w, h, r) { // desenha a mao do jogador
-        let atual = otimos[contador.rodada];
-        if (atual) {
-            contador = this.desenha_maos(atual, contador, x, y, w, h, r);
-            if (contador.jogador >= atual.mao_jogador.length && contador.dealer >= atual.mao_dealer.length) {
-                contador = this.atualiza_contador(otimos, atual, contador);
-            }
-        } else {
-            this.desenha_vitoria(contador, x, y, h);
-        }
-        this.mostra_lucro(contador, x, y);
-        this.mostra_pontuacao(contador, x, y);
-        return contador;
-    }
 }
-
-// jogo = new Blackjack();
-// jogo.embaralha();
-// let i = 0;
-// console.log(jogo.resolve(i, i));
-// console.log(jogo);
-// let otimo = jogo.reconstroi(i);
-// console.log(otimo)
