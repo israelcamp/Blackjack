@@ -1,6 +1,7 @@
-let jogo = new Blackjack;
-jogo.embaralha();
-jogo.embaralha();
+
+var deck;
+var jogo;
+var cartas;
 
 let optimo;
 let w = 250, h = 400, r = 10;
@@ -12,8 +13,15 @@ let params;
 const window_height = 1100;
 const window_width = 1900;
 
+function preload() {
+  cartas = loadJSON('http://127.0.0.1:8000/jsons/deck_branco.json');
+}
+
 function setup() {
   createCanvas(window_width, window_height);
+
+  deck = new Baralho(cartas);
+  jogo = new Blackjack(deck);
 
   console.log('LUCRO FINAL ' + jogo.resolve(0, null));
   optimo = jogo.reconstroi(0).filter(x => x);

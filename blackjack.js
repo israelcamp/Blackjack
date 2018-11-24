@@ -1,8 +1,8 @@
 class Blackjack {
     // Classe para comandar o jogo de blackjack
-    constructor() {
-        this.deck = new Baralho();
-        this.n = this.deck.length;
+    constructor(deck) {
+        this.deck = deck;
+        this.n = this.cartas.length;
         this.global_tracker = [];
         this.counter = 0;
     }
@@ -121,7 +121,7 @@ class Blackjack {
         for (let i = 0; i < atual.mao_dealer.length; i++) { // desenha as cartas do dealer
             let carta = atual.mao_dealer[i];
             carta.desenho(xdealer, y - h * 1.55, w, h, r);
-            if (i == contador.dealer) 
+            if (i == contador.dealer)
                 break;
             xdealer += xoffset;
         }
@@ -144,22 +144,24 @@ class Blackjack {
             contador.jogador++;
             if (contador.jogador + 1 == mao_jogador.length) contador.acao = 'STAND';
             else contador.acao = 'HIT';
-        } else { // dando as cartas do dealer
+        } else if (contador.dealer < mao_dealer.length - 1) { // dando as cartas do dealer
             contador.acao = '';
-            if (contador.dealer < mao_dealer.length - 1) contador.dealer++;
-            else {
+            contador.dealer++;
+            if (contador.dealer == mao_dealer.length - 1) {
                 let fim_rodada = this.determina_rodada_vencedor(mao_jogador, mao_dealer);
                 contador.acao = fim_rodada.vencedor;
                 contador.ganhos_jogador += fim_rodada.lucro;
                 contador.ganhos_dealer += -fim_rodada.lucro;
-                contador.jogador = 0;
-                contador.dealer = 0;
-                contador.rodada += 1;
-                if (contador.rodada < otimos.length) {
-                    contador.atual = otimos[contador.rodada];
-                } else {
-                    contador.fim = true;
-                }
+            }
+        } else {
+            contador.acao = 'HIT';
+            contador.jogador = 0;
+            contador.dealer = 0;
+            contador.rodada += 1;
+            if (contador.rodada < otimos.length) {
+                contador.atual = otimos[contador.rodada];
+            } else {
+                contador.fim = true;
             }
         }
         return contador;
@@ -184,9 +186,9 @@ class Blackjack {
         let emoji_jogador, emoji_dealer;
         if (contador.ganhos_dealer > contador.ganhos_jogador) {
             emoji_jogador = '\u{1F61E}';
-            emoji_dealer = '\u{1F602}';
+            emoji_dealer = '\u{1F603}';
         } else {
-            emoji_jogador = '\u{1F602}';
+            emoji_jogador = '\u{1F603}';
             emoji_dealer = '\u{1F61E}';
         }
         push();

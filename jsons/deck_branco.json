@@ -1,0 +1,274 @@
+[
+  {
+    "valor": 7,
+    "nome": 7,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 10,
+    "nome": "Q",
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 10,
+    "nome": "Q",
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 3,
+    "nome": 3,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 3,
+    "nome": 3,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 10,
+    "nome": "J",
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": 10,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 6,
+    "nome": 6,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 8,
+    "nome": 8,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 5,
+    "nome": 5,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 2,
+    "nome": 2,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 10,
+    "nome": 10,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 10,
+    "nome": "J",
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 6,
+    "nome": 6,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 8,
+    "nome": 8,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 7,
+    "nome": 7,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 6,
+    "nome": 6,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": [
+      1,
+      11
+    ],
+    "nome": "A",
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "K",
+    "naipe": "Copas"
+  },
+  {
+    "valor": 9,
+    "nome": 9,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 4,
+    "nome": 4,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 4,
+    "nome": 4,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "Q",
+    "naipe": "Copas"
+  },
+  {
+    "valor": 9,
+    "nome": 9,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "K",
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 5,
+    "nome": 5,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": [
+      1,
+      11
+    ],
+    "nome": "A",
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 3,
+    "nome": 3,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "K",
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "J",
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 4,
+    "nome": 4,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 10,
+    "nome": 10,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 5,
+    "nome": 5,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 9,
+    "nome": 9,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": [
+      1,
+      11
+    ],
+    "nome": "A",
+    "naipe": "Copas"
+  },
+  {
+    "valor": 10,
+    "nome": "J",
+    "naipe": "Copas"
+  },
+  {
+    "valor": 2,
+    "nome": 2,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 7,
+    "nome": 7,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 6,
+    "nome": 6,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 3,
+    "nome": 3,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 9,
+    "nome": 9,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 8,
+    "nome": 8,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 5,
+    "nome": 5,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 4,
+    "nome": 4,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 2,
+    "nome": 2,
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 10,
+    "nome": "Q",
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": 10,
+    "naipe": "Espadas"
+  },
+  {
+    "valor": [
+      1,
+      11
+    ],
+    "nome": "A",
+    "naipe": "Espadas"
+  },
+  {
+    "valor": 7,
+    "nome": 7,
+    "naipe": "Paus"
+  },
+  {
+    "valor": 10,
+    "nome": "K",
+    "naipe": "Ouros"
+  },
+  {
+    "valor": 2,
+    "nome": 2,
+    "naipe": "Copas"
+  },
+  {
+    "valor": 8,
+    "nome": 8,
+    "naipe": "Espadas"
+  }
+]

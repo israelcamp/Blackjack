@@ -55,9 +55,21 @@ class Carta {
 
 class Baralho {
     // Contem as cartas do baralho
-    constructor() {
+    constructor(cartas) {
         this.naipes = ['Copas', 'Paus', 'Espadas', 'Ouros'];
-        this.cartas = this.cria_baralho();
+        if (!cartas){
+            this.cartas = this.cria_baralho();
+            this.cartas = this.embaralha();
+        } else {
+            this.cartas = this.load_cartas(cartas);
+        }
+    }
+    load_cartas(cartas) {
+        let obj_cartas = [];
+        for (const [k,c] of Object.entries(cartas)) {
+            obj_cartas.push(new Carta(c.valor, c.nome, c.naipe));
+        }
+        return obj_cartas;
     }
     // cria um baralho de cartas
     cria_baralho() {
@@ -74,7 +86,7 @@ class Baralho {
     }
     // embaralha as cartas do baralho
     embaralha() {
-        shuffle(this.cartas);
+        return shuffle(this.cartas);
     }
     get length() {
         return this.cartas.length;
